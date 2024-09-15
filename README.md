@@ -1,2 +1,2 @@
-# pier
+# 🎨 pier
 Palette SSO kubeconfig CLI
