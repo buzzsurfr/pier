@@ -28,3 +28,11 @@ Using **kooky**, pier can access the browser tokens from most browser/OS combina
 Generate (pier gen) will output a kubeconfig file based on the available Palette clusters. These will be named according to the project and cluster name in Palette.
 
 By default, this will output the kubeconfig to stdout, which can be piped into a file.
+
+## Environment Variables
+
+| Key | Description | Default value |
+| --- | ----------- | ------------- |
+| `PALETTE_HOST` | Palette API endpoint | `api.spectrocloud.com` |
+| `PALETTE_API_KEY` | Palette API key | |
+| `PALETTE_TOKEN` | JWT from browser | |
