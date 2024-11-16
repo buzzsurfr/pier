@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -48,13 +49,20 @@ and cluster name in Palette.`,
 		kubeconfig := clientcmdapi.NewConfig()
 
 		// Initialize a Palette client
-
 		c := client.New(
 			client.WithPaletteURI(host),
 			client.WithAPIKey(apiKey),
 			client.WithJWT(token),
 			client.WithScopeTenant(),
 		)
+
+		// Create cache directory if it doesn't exist
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			homeDir = "/"
+		}
+		cacheDir := homeDir + "/.cache/pier"
+		os.MkdirAll(cacheDir, os.ModePerm)
 
 		// List available projects
 		projects, err := c.GetProjects()
@@ -76,6 +84,13 @@ and cluster name in Palette.`,
 			clusters, err := c.SearchClusterSummaries(&models.V1SearchFilterSpec{}, []*models.V1SearchFilterSortSpec{})
 			if err != nil {
 				panic(err)
+			}
+
+			// Cache cluster summaries per project
+			projectJSON, _ := json.Marshal(clusters)
+			err = os.WriteFile(fmt.Sprintf("%s/%s.json", cacheDir, project.Metadata.UID), projectJSON, 0644)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, err.Error())
 			}
 
 			// Display the results
